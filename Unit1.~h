@@ -1,0 +1,41 @@
+//---------------------------------------------------------------------------
+
+#ifndef Unit1H
+#define Unit1H
+//---------------------------------------------------------------------------
+#include <Classes.hpp>
+#include <Controls.hpp>
+#include <StdCtrls.hpp>
+#include <Forms.hpp>
+#include <IBCustomDataSet.hpp>
+#include <IBDatabase.hpp>
+#include <IBQuery.hpp>
+#include <IBSQL.hpp>
+#include <Dialogs.hpp>
+#include <DB.hpp>
+#include <ExtCtrls.hpp>
+#include <jpeg.hpp>
+//---------------------------------------------------------------------------
+class TForm1 : public TForm
+{
+__published:	// IDE-managed Components
+    TIBDatabase *IBDatabase1;
+    TIBTransaction *IBTransaction1;
+    TIBSQL *IBSQL1;
+    TMemo *Memo1;
+    TOpenDialog *OpenDialog1;
+    TButton *btnConectar;
+    TButton *btnExecutar;
+        TIBQuery *IBQuery1;
+        TImage *Fundoimg;
+    void __fastcall btnConectarClick(TObject *Sender);
+    void __fastcall btnExecutarClick(TObject *Sender);
+private:	// User declarations
+public:		// User declarations
+    __fastcall TForm1(TComponent* Owner);
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TForm1 *Form1;
+//---------------------------------------------------------------------------
+#endif
+
