@@ -15,14 +15,14 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 }
 
 //---------------------------------------------------------------------------
-// Botão para conectar ao banco
+// BotÃ£o para conectar ao banco
 void __fastcall TForm1::btnConectarClick(TObject *Sender)
 {
     if(OpenDialog1->Execute())
     {
         try
         {
-            // Desconecta e reconecta para garantir
+            // Desconecta e reconecnta
             IBDatabase1->Connected = false;
             IBDatabase1->DatabaseName = OpenDialog1->FileName;
             IBDatabase1->LoginPrompt = false;
@@ -42,9 +42,9 @@ void __fastcall TForm1::btnConectarClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-// Função auxiliar para extrair o nome da tabela do comando SQL
+// FunÃ§Ã£o auxiliar para extrair o nome da tabela do comando SQL
 AnsiString ExtractTableName(const AnsiString& SQLCommand) {
-    int start = SQLCommand.Pos("TABLE") + 6; // Posição após "TABLE "
+    int start = SQLCommand.Pos("TABLE") + 6; // PosiÃ§Ã£o apÃ³s "TABLE "
     int end = SQLCommand.Pos(" ADD");
     if (start > 0 && end > start) {
         return SQLCommand.SubString(start, end - start).Trim().UpperCase();
@@ -53,11 +53,11 @@ AnsiString ExtractTableName(const AnsiString& SQLCommand) {
 }
 
 //---------------------------------------------------------------------------
-// Função auxiliar para extrair o nome da coluna do comando SQL
+// FunÃ§Ã£o auxiliar para extrair o nome da coluna do comando SQL
 AnsiString ExtractColumnName(const AnsiString& SQLCommand) {
-    int start = SQLCommand.Pos("ADD") + 4; // Posição após "ADD "
+    int start = SQLCommand.Pos("ADD") + 4; // PosiÃ§Ã£o apÃ³s "ADD "
 
-    // Na sua versao, Pos() nao aceita segundo parametro
+    
     AnsiString tempStr = SQLCommand.SubString(start, SQLCommand.Length() - start + 1);
 
     int end = tempStr.Pos(" ");
@@ -69,7 +69,7 @@ AnsiString ExtractColumnName(const AnsiString& SQLCommand) {
 }
 
 //---------------------------------------------------------------------------
-// Botão para executar os scripts de atualização
+// BotÃ£o para executar os scripts de atualizaÃ§Ã£o
 void __fastcall TForm1::btnExecutarClick(TObject *Sender)
 {
     if (!IBDatabase1->Connected)
@@ -118,14 +118,14 @@ void __fastcall TForm1::btnExecutarClick(TObject *Sender)
             continue;
         }
         
-        // Inicia uma nova transação para cada comando
+        // Inicia uma nova transaÃ§Ã£o para cada comando
         IBTransaction1->StartTransaction();
         IBSQL1->Transaction = IBTransaction1;
         IBQuery1->Transaction = IBTransaction1;
 
         try
         {
-            // Verifica se a coluna já existe
+            // Verifica se a coluna jÃ¡ existe
             IBQuery1->Close();
             IBQuery1->SQL->Clear();
             IBQuery1->SQL->Add("SELECT RDB$FIELD_NAME FROM RDB$RELATION_FIELDS");
@@ -136,7 +136,7 @@ void __fastcall TForm1::btnExecutarClick(TObject *Sender)
 
             if (IBQuery1->IsEmpty())
             {
-                // A coluna não existe, então execute o ALTER TABLE
+                // A coluna nÃ£o existe, entÃ£o execute o ALTER TABLE
                 IBSQL1->Close();
                 IBSQL1->SQL->Clear();
                 IBSQL1->SQL->Add(sqlCommand);
@@ -145,23 +145,23 @@ void __fastcall TForm1::btnExecutarClick(TObject *Sender)
             }
             else
             {
-                Memo1->Lines->Add("Ignorado (já existe): Coluna " + columnName + " na tabela " + tableName);
+                Memo1->Lines->Add("Ignorado (jÃ¡ existe): Coluna " + columnName + " na tabela " + tableName);
             }
             
-            // Confirma a transação
+            // Confirma a transaÃ§Ã£o
             IBTransaction1->Commit();
         }
         catch(Exception &e)
         {
-            // Em caso de erro, desfaz a transação e exibe a mensagem
+            // Em caso de erro, desfaz a transaÃ§Ã£o e exibe a mensagem
             IBTransaction1->Rollback();
             Memo1->Lines->Add("Erro em: " + sqlCommand + " -> " + e.Message);
-            // Parar a execução se um erro crítico ocorrer
+            // Parar a execuÃ§Ã£o se um erro crÃ­tico ocorrer
             break;
         }
     }
 
-    ShowMessage("Atualização do banco de dados concluída. Verifique o log para detalhes.");
+    ShowMessage("AtualizaÃ§Ã£o do banco de dados concluÃ­da. Verifique o log para detalhes.");
     delete SQLCommands;
 }
 
