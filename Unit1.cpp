@@ -79,90 +79,189 @@ void __fastcall TForm1::btnExecutarClick(TObject *Sender)
     }
 
     TStringList *SQLCommands = new TStringList();
-    
-    // Adicione aqui todos os seus comandos ALTER TABLE
-    SQLCommands->Add("ALTER TABLE TBPROCESSO ADD ALTERA_CURVAS_OD INTEGER;");
-    SQLCommands->Add("ALTER TABLE TBPROCESSO ADD ALTERA_CURVAS_OE INTEGER;");
-    SQLCommands->Add("ALTER TABLE TBPROCESSO ADD MOLDE_ESF_OD NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBPROCESSO ADD MOLDE_CIL_OD NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBPROCESSO ADD MOLDE_ESF_OE NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBPROCESSO ADD MOLDE_CIL_OE NUMERIC(5,2);");
+    TStringList *IndexCommands = new TStringList();
 
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_11 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_12 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_13 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_14 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_15 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_16 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_17 NUMERIC(5,2);");
-
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_11 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_12 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_13 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_14 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_15 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_16 NUMERIC(5,2);");
-    SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_17 NUMERIC(5,2);");
-
-    SQLCommands->Add("ALTER TABLE TBCOMPENSACAO ADD EIXO_ULTEX_ATIV INTEGER;");
-    SQLCommands->Add("ALTER TABLE TBCOMPENSACAO ADD EIXO_ULTEX_DES INTEGER;");
-
-    for (int i = 0; i < SQLCommands->Count; i++)
+    try
     {
-        AnsiString sqlCommand = SQLCommands->Strings[i].Trim();
-        AnsiString tableName = ExtractTableName(sqlCommand);
-        AnsiString columnName = ExtractColumnName(sqlCommand);
+        // ======================================================
+        // ALTER TABLES
+        // ======================================================
 
-        if (tableName.IsEmpty() || columnName.IsEmpty()) {
-            Memo1->Lines->Add("Erro ao extrair nome da tabela/coluna do comando: " + sqlCommand);
-            continue;
-        }
-        
-        // Inicia uma nova transaÃ§Ã£o para cada comando
-        IBTransaction1->StartTransaction();
-        IBSQL1->Transaction = IBTransaction1;
-        IBQuery1->Transaction = IBTransaction1;
+        SQLCommands->Add("ALTER TABLE TBPROCESSO ADD ALTERA_CURVAS_OD INTEGER;");
+        SQLCommands->Add("ALTER TABLE TBPROCESSO ADD ALTERA_CURVAS_OE INTEGER;");
+        SQLCommands->Add("ALTER TABLE TBPROCESSO ADD MOLDE_ESF_OD NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBPROCESSO ADD MOLDE_CIL_OD NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBPROCESSO ADD MOLDE_ESF_OE NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBPROCESSO ADD MOLDE_CIL_OE NUMERIC(5,2);");
 
-        try
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_11 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_12 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_13 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_14 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_15 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_16 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_NEG_17 NUMERIC(5,2);");
+
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_11 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_12 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_13 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_14 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_15 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_16 NUMERIC(5,2);");
+        SQLCommands->Add("ALTER TABLE TBESPESSURAS ADD INT_POS_17 NUMERIC(5,2);");
+
+        SQLCommands->Add("ALTER TABLE TBCOMPENSACAO ADD EIXO_ULTEX_ATIV INTEGER;");
+        SQLCommands->Add("ALTER TABLE TBCOMPENSACAO ADD EIXO_ULTEX_DES INTEGER;");
+
+        // ======================================================
+        // ÍNDICES IMPORTANTES
+        // ======================================================
+
+        IndexCommands->Add("CREATE INDEX IDX_TBPROCESSO_NUM_ORDEM ON TBPROCESSO (NUM_ORDEM);");
+        IndexCommands->Add("CREATE INDEX IDX_TBPROCESSO_COD_CLIENTE ON TBPROCESSO (COD_CLIENTE);");
+        IndexCommands->Add("CREATE INDEX IDX_TBPROCESSO_DATA ON TBPROCESSO (DATA_CRIACAO);");
+        IndexCommands->Add("CREATE INDEX IDX_TBPROCESSO_COD_ORDEM ON TBPROCESSO (COD_ORDEM);");
+        IndexCommands->Add("CREATE INDEX IDX_TBPROCESSO_CLIENTE_DATA ON TBPROCESSO (COD_CLIENTE, DATA_CRIACAO);");
+
+        // ======================================================
+        // PROCESSA ALTER TABLE
+        // ======================================================
+
+        for (int i = 0; i < SQLCommands->Count; i++)
         {
-            // Verifica se a coluna jÃ¡ existe
-            IBQuery1->Close();
-            IBQuery1->SQL->Clear();
-            IBQuery1->SQL->Add("SELECT RDB$FIELD_NAME FROM RDB$RELATION_FIELDS");
-            IBQuery1->SQL->Add("WHERE RDB$RELATION_NAME = :TABLE_NAME AND RDB$FIELD_NAME = :COLUMN_NAME");
-            IBQuery1->ParamByName("TABLE_NAME")->AsString = tableName;
-            IBQuery1->ParamByName("COLUMN_NAME")->AsString = columnName;
-            IBQuery1->Open();
+            AnsiString sqlCommand = SQLCommands->Strings[i].Trim();
+            AnsiString tableName = ExtractTableName(sqlCommand);
+            AnsiString columnName = ExtractColumnName(sqlCommand);
 
-            if (IBQuery1->IsEmpty())
+            if (tableName.IsEmpty() || columnName.IsEmpty())
             {
-                // A coluna nÃ£o existe, entÃ£o execute o ALTER TABLE
-                IBSQL1->Close();
-                IBSQL1->SQL->Clear();
-                IBSQL1->SQL->Add(sqlCommand);
-                IBSQL1->ExecQuery();
-                Memo1->Lines->Add("Executado: " + sqlCommand);
+                Memo1->Lines->Add(
+                    "Erro ao extrair tabela/coluna: " + sqlCommand
+                );
+                continue;
             }
-            else
+
+            IBTransaction1->StartTransaction();
+
+            try
             {
-                Memo1->Lines->Add("Ignorado (jÃ¡ existe): Coluna " + columnName + " na tabela " + tableName);
+                IBQuery1->Close();
+                IBQuery1->SQL->Clear();
+                IBQuery1->SQL->Add(
+                    "SELECT RDB$FIELD_NAME "
+                    "FROM RDB$RELATION_FIELDS "
+                    "WHERE RDB$RELATION_NAME = :TABLE_NAME "
+                    "AND RDB$FIELD_NAME = :COLUMN_NAME"
+                );
+
+                IBQuery1->ParamByName("TABLE_NAME")->AsString = tableName;
+                IBQuery1->ParamByName("COLUMN_NAME")->AsString = columnName;
+                IBQuery1->Open();
+
+                if (IBQuery1->IsEmpty())
+                {
+                    IBSQL1->Close();
+                    IBSQL1->SQL->Clear();
+                    IBSQL1->SQL->Add(sqlCommand);
+                    IBSQL1->ExecQuery();
+
+                    Memo1->Lines->Add("Executado: " + sqlCommand);
+                }
+                else
+                {
+                    Memo1->Lines->Add(
+                        "Ignorado (já existe): " +
+                        tableName + "." + columnName
+                    );
+                }
+
+                IBTransaction1->Commit();
             }
-            
-            // Confirma a transaÃ§Ã£o
-            IBTransaction1->Commit();
+            catch (Exception &e)
+            {
+                IBTransaction1->Rollback();
+
+                Memo1->Lines->Add(
+                    "Erro em: " + sqlCommand +
+                    " -> " + e.Message
+                );
+            }
         }
-        catch(Exception &e)
+
+        // ======================================================
+        // PROCESSA ÍNDICES
+        // ======================================================
+
+        for (int i = 0; i < IndexCommands->Count; i++)
         {
-            // Em caso de erro, desfaz a transaÃ§Ã£o e exibe a mensagem
-            IBTransaction1->Rollback();
-            Memo1->Lines->Add("Erro em: " + sqlCommand + " -> " + e.Message);
-            // Parar a execuÃ§Ã£o se um erro crÃ­tico ocorrer
-            break;
+            AnsiString sqlIndex = IndexCommands->Strings[i];
+
+            int pos1 = sqlIndex.Pos("CREATE INDEX ");
+            int pos2 = sqlIndex.Pos(" ON ");
+
+            if (pos1 <= 0 || pos2 <= 0)
+                continue;
+
+            AnsiString indexName = sqlIndex.SubString(
+                14,
+                pos2 - 14
+            ).Trim().UpperCase();
+
+            IBTransaction1->StartTransaction();
+
+            try
+            {
+                IBQuery1->Close();
+                IBQuery1->SQL->Clear();
+                IBQuery1->SQL->Add(
+                    "SELECT RDB$INDEX_NAME "
+                    "FROM RDB$INDICES "
+                    "WHERE RDB$INDEX_NAME = :INDEX_NAME"
+                );
+
+                IBQuery1->ParamByName("INDEX_NAME")->AsString = indexName;
+                IBQuery1->Open();
+
+                if (IBQuery1->IsEmpty())
+                {
+                    IBSQL1->Close();
+                    IBSQL1->SQL->Clear();
+                    IBSQL1->SQL->Add(sqlIndex);
+                    IBSQL1->ExecQuery();
+
+                    Memo1->Lines->Add(
+                        "Índice criado: " + indexName
+                    );
+                }
+                else
+                {
+                    Memo1->Lines->Add(
+                        "Índice já existe: " + indexName
+                    );
+                }
+
+                IBTransaction1->Commit();
+            }
+            catch (Exception &e)
+            {
+                IBTransaction1->Rollback();
+
+                Memo1->Lines->Add(
+                    "Erro índice " + indexName +
+                    ": " + e.Message
+                );
+            }
         }
+
+        ShowMessage(
+            "Atualização concluída. Verifique o log."
+        );
     }
-
-    ShowMessage("AtualizaÃ§Ã£o do banco de dados concluÃ­da. Verifique o log para detalhes.");
-    delete SQLCommands;
+    __finally
+    {
+        delete SQLCommands;
+        delete IndexCommands;
+    }
 }
 
 

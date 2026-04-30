@@ -4,8 +4,8 @@ object Form1: TForm1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Transfere Banco CalcToolRX'
-  ClientHeight = 448
-  ClientWidth = 502
+  ClientHeight = 449
+  ClientWidth = 499
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1563,6 +1563,59 @@ object Form1: TForm1
       2800A002800A002800A002800A002800A002800A002800A002800A002800A002
       800A002800A002800A002800A002800A002800A002800A002800A002800A0028
       00A002800A002800A002800A002800A002800A002800A002800A002803FFD9}
+  end
+  object Label1: TLabel
+    Left = 64
+    Top = 104
+    Width = 377
+    Height = 17
+    Alignment = taCenter
+    AutoSize = False
+    Caption = '1 - Passo: se conecte ao Arquivo GDB do Cliente'
+    Color = clWhite
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Microsoft YaHei UI'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 40
+    Top = 136
+    Width = 423
+    Height = 21
+    Alignment = taCenter
+    BiDiMode = bdLeftToRight
+    Caption = '2 - Passo: ap'#243's sucesso na conex'#227'o clique em Executar.'
+    Color = clWhite
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Microsoft YaHei UI'
+    Font.Style = []
+    ParentBiDiMode = False
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 72
+    Top = 176
+    Width = 357
+    Height = 25
+    Alignment = taCenter
+    BiDiMode = bdLeftToRight
+    Caption = 'Tudo pronto para uso...Verifique a log!'
+    Color = clWhite
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Microsoft YaHei UI'
+    Font.Style = []
+    ParentBiDiMode = False
+    ParentColor = False
+    ParentFont = False
   end
   object Memo1: TMemo
     Left = 80
